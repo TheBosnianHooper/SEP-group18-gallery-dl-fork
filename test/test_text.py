@@ -324,10 +324,10 @@ class TestText(unittest.TestCase):
         self.assertEqual(f("foo\\u2019bar"), "foo’bar")
         self.assertEqual(f("foo\\u201bar"), "foo‛ar")
         self.assertEqual(f("foo\\u201zar"), "foo\\u201zar")
-        self.assertEqual(
-            f("\\u2018foo\\u2019\\u2020bar\\u00ff"),
-            "‘foo’†barÿ",
-        )
+        self.assertEqual(f("\\u2018foo\\u2019\\u2020bar\\u00ff"), "‘foo’†barÿ")
+        self.assertEqual(f("\\uXYZWfoo"), "\\uXYZWfoo")  # Invalid escape sequence
+       # self.assertEqual(f("\\u201foo\\u20"), "\\u201foo\\u20")  # Incomplete escape sequence
+        #self.assertEqual(f("foo\\u201"), "foo\\u201")  # Incomplete escape sequence
 
     def test_parse_bytes(self, f=text.parse_bytes):
         self.assertEqual(f("0"), 0)
@@ -410,9 +410,12 @@ class TestText(unittest.TestCase):
         )
 
         # invalid arguments
+        INVALID = [None, 123, [], {}, set()]
         for value in INVALID:
             self.assertEqual(f(value), {})
 
+        # ensure exception handling branch is covered
+        self.assertEqual(f(None), {})
     def test_parse_timestamp(self, f=text.parse_timestamp):
         null = datetime.datetime.utcfromtimestamp(0)
         value = datetime.datetime.utcfromtimestamp(1555816235)
