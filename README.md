@@ -16,7 +16,7 @@ Programming language: python
 
 coverage.py was used for branch coverage for the tests
 
-screenshots provided in google doc
+screenshots provided in google doc due to issues inputting images
 
 https://docs.google.com/document/d/1uaWXOiuq792Gg7jwYl5rFXUqrEW7WOBVCVFZTzvl0Bo/edit
 
@@ -68,3 +68,36 @@ https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/f5658c8d8
 ## Statement of individual contributions
 
 <Write what each group member did>
+
+Pedro
+
+<Function 1 name> import_module
+
+link to commit:
+
+https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/3423da2bdbdf11b3c15a07317fa369cc0d36dcd1
+
+<Function 1 name> parse_retries
+
+https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/3423da2bdbdf11b3c15a07317fa369cc0d36dcd1
+
+<Test 1>
+
+link to commit:
+https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/3423da2bdbdf11b3c15a07317fa369cc0d36dcd1
+
+improvement:
+
+0% -> 100%
+The new test cases have covered the branches for checking infinite retries (inf, infinite) and converting retries to integers. The additional assertions ensure that each branch is hit, resulting in an improved overall branch coverage from 0% to 100%.
+
+<Test 2>
+
+link to commit:
+https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/3423da2bdbdf11b3c15a07317fa369cc0d36dcd1
+
+improvement:
+
+0% -> 100%
+
+The new tests cover the branches for importing the default yt_dlp module, falling back to youtube_dl, and importing a specified module with hyphens replaced by underscores. These additions ensure all branches are hit, improving the overall branch coverage from 0% to 100%.
