@@ -46,6 +46,9 @@ class TestText(unittest.TestCase):
         for value in INVALID:
             self.assertEqual(f(value), "")
 
+        # # Test cases to hit the last line of remove_html
+        self.assertEqual(f("Hello World.", sep=""), "Hello World.")
+
     def test_split_html(self, f=text.split_html):
         result = ["Hello", "World."]
         empty = []

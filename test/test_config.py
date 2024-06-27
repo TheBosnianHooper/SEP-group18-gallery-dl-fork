@@ -10,7 +10,7 @@
 import os
 import sys
 import unittest
-
+from unittest.mock import patch, mock_open
 import tempfile
 
 ROOTDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -212,6 +212,71 @@ class TestConfigFiles(unittest.TestCase):
                 return util.json_loads(fp.read())
         except FileNotFoundError:
             raise unittest.SkipTest(path + " not available")
+
+
+class TestInitialize(unittest.TestCase):
+
+    @patch('gallery_dl.config.log')  # Mock the logging object
+    @patch('gallery_dl.config.open', new_callable=mock_open)  # Mock the open function to capture file writes
+    @patch('gallery_dl.config.os.access', side_effect=lambda x, y: False)  # Mock os.access to simulate no existing config
+    @patch('gallery_dl.config.os.makedirs')  # Mock os.makedirs to avoid actual directory creation
+    def test_initialize_success(self, mock_makedirs, mock_access, mock_open, mock_log):
+        # Call initialize
+        result = config.initialize()
+
+        # Assert that os.makedirs was called with the correct path
+        mock_makedirs.assert_called_once_with(os.path.dirname(config._default_configs[0]), exist_ok=True)
+
+        # Assert that open was called with the correct path and content
+        expected_content = """\
+{
+    "extractor": {
+
+    },
+    "downloader": {
+
+    },
+    "output": {
+
+    },
+    "postprocessor": {
+
+    }
+}
+"""
+        mock_open.assert_called_once_with(config._default_configs[0], 'x', encoding='utf-8')
+        handle = mock_open()
+        handle.write.assert_called_once_with(expected_content)
+
+        # Assert result of initialize() function
+        self.assertEqual(result, 0)  # Success should return 0
+
+        # Assert log messages
+        mock_log.info.assert_called_once_with("Created a basic configuration file at '%s'", config._default_configs[0])
+
+    @patch('gallery_dl.config.log')  # Mock the logging object
+    @patch('gallery_dl.config.os.access', side_effect=lambda x, y: True)  # Mock os.access to simulate existing config
+    def test_initialize_existing_file(self, mock_access, mock_log):
+        # Call initialize
+        result = config.initialize()
+
+        # Assert result of initialize() function
+        self.assertEqual(result, 1)  # Existing file should return 1
+
+        # Assert log message
+        mock_log.error.assert_called_once_with("There is already a configuration file at '%s'", config._default_configs[0])
+
+    @patch('gallery_dl.config.log')  # Mock the logging object
+    @patch('gallery_dl.config.open', side_effect=OSError("Unable to create file"))  # Mock open to simulate OSError
+    def test_initialize_oserror(self, mock_open, mock_log):
+        # Call initialize
+        result = config.initialize()
+
+        # Assert result of initialize() function
+        self.assertEqual(result, 1)  # OSError should return 1
+
+        # Assert log message
+        mock_log.error.assert_called_once()
 
 
 if __name__ == "__main__":
