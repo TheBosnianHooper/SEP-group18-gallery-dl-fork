@@ -2,21 +2,21 @@
 
 ## Project chosen
 
-Name: <TODO>
+Name: gallery_dl
 
-URL: <TODO>
+URL: https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork.git
 
-Number of lines of code and the tool used to count it: <TODO>
+Number of lines of code and the tool used to count it: 62kloc lizard
 
-Programming language: <TODO>
+Programming language: python
 
 ## Coverage measurement
 
 ### Existing tool
 
-<Inform the name of the existing tool that was executed and how it was executed>
+coverage.py was used for branch coverage for the tests
 
-<Show the coverage results provided by the existing tool with a screenshot>
+screenshots provided in google doc
 
 ### Your own coverage tool
 
