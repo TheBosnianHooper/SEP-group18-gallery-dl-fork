@@ -18,15 +18,18 @@ coverage.py was used for branch coverage for the tests
 
 screenshots provided in google doc
 
+https://docs.google.com/document/d/1uaWXOiuq792Gg7jwYl5rFXUqrEW7WOBVCVFZTzvl0Bo/edit
+
 ### Your own coverage tool
 
 <The following is supposed to be repeated for each group member>
 
-<Group member name>
+Abdulelah Sibai
 
-<Function 1 name>
+remove_html in text.py
+initialize in config.py
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+https://github.com/TheBosnianHooper/SEP-group18-gallery-dl-fork/commit/f5658c8d8a9372895093b8e515c3b1567ae5041c
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
