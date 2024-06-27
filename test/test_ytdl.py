@@ -10,9 +10,63 @@
 import os
 import sys
 import unittest
+from unittest.mock import patch
+
+sys.path.append('/Users/pedropinto/Downloads/gallery-dl-master')  # Ensure the path is correct
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gallery_dl import ytdl, util, config  # noqa E402
+
+class TestImportModule(unittest.TestCase):
+    @patch('builtins.__import__')
+    def test_default_import_yt_dlp(self, mock_import):
+        # Mock __import__ to simulate importing 'yt_dlp' successfully
+        mock_import.return_value = "yt_dlp module"
+
+        # Trigger default import path
+        result = ytdl.import_module(None)
+        self.assertEqual(result, "yt_dlp module")
+        self.assertTrue(ytdl.branch_coverage["branch_default_import"])
+        mock_import.assert_called_once_with("yt_dlp")
+
+    @patch('builtins.__import__')
+    def test_fallback_import_youtube_dl(self, mock_import):
+        # Simulate ImportError for 'yt_dlp' and successful import for 'youtube_dl'
+        mock_import.side_effect = [ImportError, "youtube_dl module"]
+
+        # Trigger fallback import path
+        result = ytdl.import_module(None)
+        self.assertEqual(result, "youtube_dl module")
+        self.assertTrue(ytdl.branch_coverage["branch_fallback_import"])
+        calls = [mock_import.call_args_list[0][0], mock_import.call_args_list[1][0]]
+        self.assertIn(('yt_dlp',), calls)
+        self.assertIn(('youtube_dl',), calls)
+
+    @patch('builtins.__import__')
+    def test_specific_module_import(self, mock_import):
+        # Mock __import__ to simulate importing a specific module
+        mock_import.return_value = "specific module"
+
+        # Trigger specific module import path
+        result = ytdl.import_module("custom-module")
+        self.assertEqual(result, "specific module")
+        self.assertTrue(ytdl.branch_coverage["branch_specific_import"])
+        mock_import.assert_called_once_with("custom_module")
+
+class TestParseRetries(unittest.TestCase):
+    def test_parse_retries(self):
+        # Test infinite retries
+        result = ytdl.parse_retries("inf")
+        self.assertEqual(result, float("inf"))
+        self.assertTrue(ytdl.branch_coverage["parse_retries_inf"], "Branch 'inf' not covered")
+
+        # Test numeric retries
+        result = ytdl.parse_retries("3")
+        self.assertEqual(result, 3)
+        self.assertTrue(ytdl.branch_coverage["parse_retries_int"], "Branch 'int' not covered")
+
+        # Ensure all branches are covered
+        self.assertTrue(all(ytdl.branch_coverage.values()), "Not all branches were covered")
 
 
 class Test_CommandlineArguments(unittest.TestCase):
@@ -293,6 +347,7 @@ class Test_CommandlineArguments_YtDlp(Test_CommandlineArguments):
                "geo_bypass", "EN")
         self._(["--geo-bypass-ip-block", "198.51.100.14/24"],
                "geo_bypass", "198.51.100.14/24")
+
 
 
 if __name__ == "__main__":

@@ -14,14 +14,23 @@ import itertools
 from . import text, util, exception
 
 
+branch_coverage = {
+    "branch_default_import": False,
+    "branch_fallback_import": False,
+    "branch_specific_import": False
+}
+
 def import_module(module_name):
     if module_name is None:
+        branch_coverage["branch_default_import"] = True
         try:
             return __import__("yt_dlp")
         except ImportError:
+            branch_coverage["branch_fallback_import"] = True
             return __import__("youtube_dl")
-    return __import__(module_name.replace("-", "_"))
-
+    else:
+        branch_coverage["branch_specific_import"] = True
+        return __import__(module_name.replace("-", "_"))
 
 def construct_YoutubeDL(module, obj, user_opts, system_opts=None):
     opts = argv = None
@@ -418,12 +427,18 @@ def parse_command_line(module, argv):
         "compat_opts": compat_opts,
     }
 
+branch_coverage = {
+    "parse_retries_inf": False,
+    "parse_retries_int": False
+}
 
 def parse_retries(retries, name=""):
     if retries in ("inf", "infinite"):
+        branch_coverage["parse_retries_inf"] = True
         return float("inf")
-    return int(retries)
-
+    else:
+        branch_coverage["parse_retries_int"] = True
+        return int(retries)
 
 def legacy_postprocessors(opts, module, ytdlp, compat_opts):
     postprocessors = []
